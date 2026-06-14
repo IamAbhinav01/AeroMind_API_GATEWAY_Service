@@ -44,6 +44,43 @@ class CrudRepository {
       );
     }
   }
+  async get(modelId) {
+    try {
+      const data = await this.model.findByPk(modelId);
+      if (!data) {
+        LoggerConfig.error(`Not able to find the data with id ${modelId}`);
+        throw new ErrorHandler(
+          `Not able to find the data with id ${modelId}`,
+          StatusCodes.BAD_REQUEST
+        );
+      }
+      LoggerConfig.info(`Successfully fetched the data with id ${modelId}`);
+      return data;
+    } catch (error) {
+      LoggerConfig.error(
+        `Error occured while fetching the data with id ${modelId} ERROR:${error}`
+      );
+      throw new ErrorHandler(
+        `Error occured while fetching the data with id ${modelId} ERROR:${error}`,
+        StatusCodes.INTERNAL_SERVER_ERROR
+      );
+    }
+  }
+  async getAll() {
+    try {
+      const response = await this.model.findAll();
+      LoggerConfig.info(`Successfully fetched all the data`);
+      return response;
+    } catch (error) {
+      LoggerConfig.error(
+        `Error occured while fetching all the data ERROR:${error}`
+      );
+      throw new ErrorHandler(
+        `Error occured while fetching all the data ERROR:${error}`,
+        StatusCodes.INTERNAL_SERVER_ERROR
+      );
+    }
+  }
 }
 
 module.exports = { CrudRepository };
