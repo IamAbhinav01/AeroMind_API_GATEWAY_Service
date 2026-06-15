@@ -1,5 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
+const bcrypt = require('bcrypt');
+const serverConfig = require('../config/server.config');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -25,9 +27,18 @@ module.exports = (sequelize, DataTypes) => {
         validate: { len: [6, 20] },
       },
     },
+
     {
       sequelize,
       modelName: 'User',
+
+      hooks: {
+        beforeCreate: async (user) => {
+          if (!user.password) return;
+          const salt = await bcrypt.genSaltSync(+serverConfig.SALT_ROUNDS, 'a');
+          user.password = bcrypt.hashSync(user.password, salt);
+        },
+      },
     }
   );
   return User;
