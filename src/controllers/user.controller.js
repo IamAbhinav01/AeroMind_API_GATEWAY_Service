@@ -9,11 +9,13 @@ const signUser = async (req, res) => {
       email: req.body.email,
       password: req.body.password,
     });
+    const userObject = response.toJSON();
+    delete userObject.password;
     LoggerConfig.info('Successfully recieved user Object from client');
     return res.status(StatusCodes.CREATED).json({
       ...sucessResponse,
       message: 'Successfully created a user object and send to database',
-      data: response,
+      data: userObject,
     });
   } catch (error) {
     LoggerConfig.error(`Error while creating booking: ${error.message}`);
