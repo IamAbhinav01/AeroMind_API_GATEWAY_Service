@@ -1,8 +1,9 @@
 const express = require('express');
-const { healthController, aeroplaneController } = require('../../controllers/');
+const { healthController } = require('../../controllers/');
+const userRoutes = require('./user.routes');
 
 const router = express.Router();
 
 router.use('/healthy', healthController.health);
-
+router.use('/user', userRoutes);
 module.exports = router;
