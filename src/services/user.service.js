@@ -1,8 +1,10 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const { StatusCodes } = require('http-status-codes');
-const { LoggerConfig } = require('../config');
+const { LoggerConfig, ServerConfig } = require('../config');
 const { ErrorHandler } = require('../errors');
 const { UserRepository } = require('../repositories');
+const { JWT_EXPIRY, JWT_SECRET } = require('../config/server.config');
 const userRepo = new UserRepository();
 const signup = async function (data) {
   try {
@@ -45,6 +47,18 @@ const checkPassword = async (inputPassword, backendPassword) => {
   }
 };
 
+const jwtToken = async (incommingRequest) => {
+  try {
+    return jwt.sign(incommingRequest, JWT_SECRET, { expiresIn: JWT_EXPIRY });
+  } catch (error) {
+    LoggerConfig.error('Error while craeting the jwt token');
+    throw new ErrorHandler(
+      'Error while craeting the jwt token ',
+      StatusCodes.BAD_GATEWAY
+    );
+  }
+};
+
 const signin = async function (data) {
   try {
     const user = await userRepo.getUserDetails(data.email);
@@ -55,8 +69,9 @@ const signin = async function (data) {
         StatusCodes.BAD_REQUEST
       );
     }
-    console.log('the output of is_Valid_..', is_Valid_Password);
-    return user;
+    const jwt_token = await jwtToken({ id: user.id, email: user.email });
+
+    return jwt_token;
   } catch (error) {
     if (error instanceof ErrorHandler) {
       throw error;
@@ -67,6 +82,7 @@ const signin = async function (data) {
     );
   }
 };
+
 module.exports = {
   signup,
   signin,
