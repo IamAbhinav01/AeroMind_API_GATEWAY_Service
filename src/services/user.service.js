@@ -82,6 +82,7 @@ const signin = async function (data) {
       );
     }
     const jwt_token = await jwtToken({ id: user.id, email: user.email });
+    console.log('JWT TOKEN: ', jwt_token);
     LoggerConfig.info('successfully signed in the user');
     return jwt_token;
   } catch (error) {
