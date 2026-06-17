@@ -59,6 +59,18 @@ const jwtToken = async (incommingRequest) => {
   }
 };
 
+const verifyjwtToken = async (currentToken) => {
+  try {
+    return jwt.verify(currentToken, JWT_SECRET);
+  } catch (error) {
+    LoggerConfig.error('Error while verifying  the jwt token');
+    throw new ErrorHandler(
+      'Error while verifying the jwt token ',
+      StatusCodes.BAD_GATEWAY
+    );
+  }
+};
+
 const signin = async function (data) {
   try {
     const user = await userRepo.getUserDetails(data.email);
@@ -70,14 +82,45 @@ const signin = async function (data) {
       );
     }
     const jwt_token = await jwtToken({ id: user.id, email: user.email });
-
+    console.log('JWT TOKEN: ', jwt_token);
+    LoggerConfig.info('successfully signed in the user');
     return jwt_token;
   } catch (error) {
     if (error instanceof ErrorHandler) {
       throw error;
     }
+    LoggerConfig.error('error while signin the user');
     throw new ErrorHandler(
       'Error occured while signing in user',
+      StatusCodes.BAD_REQUEST
+    );
+  }
+};
+
+const checkAuthentication = async (currentToken) => {
+  try {
+    if (!currentToken) {
+      LoggerConfig('Token not found .');
+      throw new ErrorHandler(
+        'Token Not found , check again',
+        StatusCodes.BAD_REQUEST
+      );
+    }
+    const output = verifyjwtToken(currentToken);
+    const userDetails = userRepo.get(output.id);
+    if (!userDetails) {
+      throw new ErrorHandler(
+        'No user signature found in the jwt token',
+        StatusCodes.CONFLICT
+      );
+    }
+    return userDetails;
+  } catch (error) {
+    if (error instanceof ErrorHandler) {
+      throw error;
+    }
+    throw new ErrorHandler(
+      'Error occured while authenticating the user',
       StatusCodes.BAD_REQUEST
     );
   }
@@ -86,4 +129,5 @@ const signin = async function (data) {
 module.exports = {
   signup,
   signin,
+  checkAuthentication,
 };
