@@ -22,6 +22,7 @@ const validatingAuthenticationRequest = async (req, res, next) => {
   }
   next();
 };
+
 module.exports = {
   validatingAuthenticationRequest,
 };
