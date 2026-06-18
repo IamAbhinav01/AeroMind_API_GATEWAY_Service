@@ -49,6 +49,7 @@ const AuthorizationBearerRequest = async (req, res, next) => {
     return res.status(StatusCodes.BAD_REQUEST).json(responsePayload);
   }
 };
+
 module.exports = {
   validatingAuthenticationRequest,
   AuthorizationBearerRequest,

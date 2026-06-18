@@ -11,7 +11,6 @@ router.post(
 router.post(
   '/signin',
   Authentication.validatingAuthenticationRequest,
-
   UserController.signInUser
 );
 
