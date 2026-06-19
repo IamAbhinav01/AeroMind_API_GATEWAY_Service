@@ -15,9 +15,11 @@ module.exports = (sequelize, DataTypes) => {
   }
   Role.init(
     {
-      name: { type: DataTypes.ENUM({ values: [ADMIN, USER, AIRLINE] }) },
-      allowNull: false,
-      defaultValue: USER,
+      name: {
+        type: DataTypes.ENUM({ values: [ADMIN, USER, AIRLINE] }),
+        allowNull: false,
+        defaultValue: USER,
+      },
     },
     {
       sequelize,
