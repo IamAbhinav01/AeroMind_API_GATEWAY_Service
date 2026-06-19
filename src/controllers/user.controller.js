@@ -5,9 +5,11 @@ const { UserService } = require('../services');
 
 const signUpUser = async (req, res) => {
   try {
+    const email = req.body.email ? req.body.email.toString().trim() : '';
+    const password = req.body.password ? req.body.password.toString() : '';
     const response = await UserService.signup({
-      email: req.body.email,
-      password: req.body.password,
+      email,
+      password,
     });
     const userObject = response.toJSON();
     delete userObject.password;
@@ -32,9 +34,11 @@ const signUpUser = async (req, res) => {
 
 const signInUser = async (req, res) => {
   try {
+    const email = req.body.email ? req.body.email.toString().trim() : '';
+    const password = req.body.password ? req.body.password.toString() : '';
     const response = await UserService.signin({
-      email: req.body.email,
-      password: req.body.password,
+      email,
+      password,
     });
 
     return res.status(StatusCodes.ACCEPTED).json({

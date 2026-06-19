@@ -66,14 +66,14 @@ const signin = async function (data) {
 const checkAuthentication = async (currentToken) => {
   try {
     if (!currentToken) {
-      LoggerConfig('Token not found .');
+      LoggerConfig.error('Token not found .');
       throw new ErrorHandler(
         'Token Not found , check again',
         StatusCodes.BAD_REQUEST
       );
     }
-    const output = verifyjwtToken(currentToken);
-    const userDetails = userRepo.get(output.id);
+    const output = await verifyjwtToken(currentToken);
+    const userDetails = await userRepo.get(output.id);
     if (!userDetails) {
       throw new ErrorHandler(
         'No user signature found in the jwt token',
