@@ -1,12 +1,18 @@
 const express = require('express');
 const { ServerConfig, LoggerConfig } = require('./config');
 const apiRoutes = require('./routes');
+const cors = require('cors');
+const { FRONTEND_SERVICE_URL } = require('./config/server.config');
 const app = express();
 
-// Body parsers are intentionally NOT applied globally.
-// Applying them globally would consume the request stream before the proxy
-// can forward it to downstream services (flights/bookings).
-// They are applied only on the /user routes where the gateway itself handles the body.
+app.use(
+  cors({
+    origin: FRONTEND_SERVICE_URL,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Authorization', 'Content-Type'],
+  })
+);
+
 app.use('/api/v1/user', express.json());
 app.use('/api/v1/user', express.urlencoded({ extended: true }));
 app.use('/api', apiRoutes);
