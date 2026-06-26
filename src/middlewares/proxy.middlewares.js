@@ -2,6 +2,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const {
   FLIGHTS_SERVICE_URL,
   BOOKING_SERVICE_URL,
+  AI_SERVICE_URL,
 } = require('../config/server.config');
 
 const flightsProxy = createProxyMiddleware({
@@ -14,7 +15,9 @@ const flightsProxy = createProxyMiddleware({
   pathRewrite: (path) => `/api/v1/flights${path}`,
   on: {
     error: (err, req, res) => {
-      res.status(502).json({ error: 'Flights service unavailable', detail: err.message });
+      res
+        .status(502)
+        .json({ error: 'Flights service unavailable', detail: err.message });
     },
   },
 });
@@ -29,7 +32,24 @@ const bookingProxy = createProxyMiddleware({
   pathRewrite: (path) => `/api/v1/booking${path}`,
   on: {
     error: (err, req, res) => {
-      res.status(502).json({ error: 'Booking service unavailable', detail: err.message });
+      res
+        .status(502)
+        .json({ error: 'Booking service unavailable', detail: err.message });
+    },
+  },
+});
+
+const aiProxy = createProxyMiddleware({
+  target: AI_SERVICE_URL,
+  changeOrigin: true,
+  proxyTimeout: 30000,
+  timeout: 30000,
+  pathRewrite: (path) => `/api/v1/ai${path}`,
+  on: {
+    error: (err, req, res) => {
+      res
+        .status(502)
+        .json({ error: 'AI service unavailable', detail: err.message });
     },
   },
 });
@@ -37,4 +57,5 @@ const bookingProxy = createProxyMiddleware({
 module.exports = {
   flightsProxy,
   bookingProxy,
+  aiProxy,
 };

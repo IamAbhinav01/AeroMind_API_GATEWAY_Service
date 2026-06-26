@@ -6,6 +6,7 @@ const { RateLimiter } = require('../../middlewares');
 const {
   flightsProxy,
   bookingProxy,
+  aiProxy,
 } = require('../../middlewares/proxy.middlewares');
 const { checkAuthentication } = require('../../services/user.service');
 const {
@@ -21,6 +22,7 @@ router.use(
   AuthorizationBearerRequest,
   bookingProxy
 );
+router.use('/ai', RateLimiter.standardLimiter, aiProxy);
 
 router.use('/healthy', healthController.health);
 router.use('/user', userRoutes);
