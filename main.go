@@ -1,6 +1,7 @@
 package main
 
 import (
+	"AeromindGO/app"
 	"fmt"
 	"log"
 	"os"
@@ -19,10 +20,21 @@ func main(){
 		fmt.Println("Unable to load .env")
 	}
 
-	PORT:=os.Getenv("PORT")
+	PORT:=":" + os.Getenv("PORT")
 
 
 
+	cfg:=app.Config{
+		Addr: PORT,
+	}
+
+	app:=app.Application{
+		Config: cfg,
+	}
+
+	err = app.Run()
+	if err != nil{
+		log.Fatal(err)
+	}
 	
-
 }
