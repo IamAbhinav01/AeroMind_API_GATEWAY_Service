@@ -1,0 +1,2 @@
+*.go linguist-language=Go
+src/ linguist-vendored
