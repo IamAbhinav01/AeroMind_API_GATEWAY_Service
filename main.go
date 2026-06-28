@@ -2,11 +2,8 @@ package main
 
 import (
 	"AeromindGO/app"
-	"fmt"
+	config "AeromindGO/config/env"
 	"log"
-	"os"
-
-	"github.com/joho/godotenv"
 )
 
 
@@ -14,23 +11,12 @@ func main(){
 
 
 	
-
+	config.Load()
 	
-	PORT:=":" + os.Getenv("PORT")
-
-
-
-	cfg:=app.Config{
-		Addr: PORT,
-	}
-
-	app:=app.Application{
-		Config: cfg,
-	}
-
-	err = app.Run()
-	if err != nil{
+	app:=app.NewApplication()
+	err:=app.Run()
+	if(err != nil){
 		log.Fatal(err)
 	}
-	
+	app.Run()
 }

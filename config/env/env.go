@@ -9,7 +9,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func load() { 
+func Load() { 
 	err :=godotenv.Load()
 	if err != nil{
 		log.Fatal("Error loading .env file")
@@ -30,5 +30,19 @@ func GetInt(key string , fallback int) int{
 	}
 
 	return intValue
+
+}
+
+
+func GetString(key string , fallback string) string{
+
+	value,ok := os.LookupEnv(key)
+	if !ok{
+		return fallback
+	}
+
+
+	
+	return value
 
 }

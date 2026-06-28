@@ -1,6 +1,7 @@
 package app
 
 import (
+	config "AeromindGO/config/env"
 	"fmt"
 	"net/http"
 	"time"
@@ -12,6 +13,14 @@ type Config struct{
 
 type Application struct{
 	Config Config
+}
+
+func NewApplication() *Application{
+	return  &Application{
+		Config: Config{
+			Addr: config.GetString("PORT",":3000"),
+		},
+	}
 }
 
 func (app *Application) Run() error{
