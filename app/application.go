@@ -1,7 +1,12 @@
 package app
 
 import (
+	DB "AeromindGO/DB/repositories"
+	DBconfig "AeromindGO/config/db"
 	config "AeromindGO/config/env"
+	"AeromindGO/controllers"
+	"AeromindGO/router"
+	"AeromindGO/services"
 	"fmt"
 	"net/http"
 	"time"
@@ -24,9 +29,18 @@ func NewApplication() *Application{
 }
 
 func (app *Application) Run() error{
+	db,err:=DBconfig.DBInit()
+	if err != nil{
+		fmt.Println("Error while setting up database",err)
+		return err
+	}
+	ur:=DB.NewUserRepository(db)
+	us:=services.NewUserService(ur)
+	uc:=controllers.NewUserController(us)
+	uRouter:=router.NewRouter(uc)
 	server:=&http.Server{
 		Addr: app.Config.Addr,
-		Handler: nil,
+		Handler: router.SetupRouter(uRouter),
 		ReadTimeout: 10*time.Second,
 		WriteTimeout: 10*time.Second,
 	}

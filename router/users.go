@@ -11,7 +11,7 @@ type UserRouter struct {
 }
 
 func (user *UserRouter) Register(r chi.Router){
-	r.Get("/create",user.UserController.Create)
+	r.Post("/create",user.UserController.Create)
 }
 
 func NewRouter(_userController *controllers.UserController) Router{
