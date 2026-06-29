@@ -2,6 +2,7 @@ package main
 
 import (
 	"AeromindGO/app"
+	DBconfig "AeromindGO/config/db"
 	config "AeromindGO/config/env"
 	"log"
 )
@@ -9,10 +10,8 @@ import (
 
 func main(){
 
-
-	
 	config.Load()
-	
+	DBconfig.DBInit()
 	app:=app.NewApplication()
 	err:=app.Run()
 	if(err != nil){
