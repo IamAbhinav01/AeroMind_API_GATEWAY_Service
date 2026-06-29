@@ -3,3 +3,4 @@ src
 src/config
 .env
 node_modules
+tmp

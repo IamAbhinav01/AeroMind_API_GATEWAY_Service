@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+vars:
+  GREETING: Hello, world!
+
+tasks:
+  dev:
+    cmds:
+      - air
+
+  # build:
+  #   cmds:
+  #     - go build -o bin/server ./cmd/api
+
+  run:
+    cmds:
+      - go run main.go
+
+  # test:
+  #   cmds:
+  #     - go test ./...
+
+  fmt:
+    cmds:
+      - go fmt ./...
