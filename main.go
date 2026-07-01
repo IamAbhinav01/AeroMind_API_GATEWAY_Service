@@ -2,20 +2,16 @@ package main
 
 import (
 	"AeromindGO/app"
-	DBconfig "AeromindGO/config/db"
 	config "AeromindGO/config/env"
 	"log"
 )
 
 
-func main(){
-
+func main() {
 	config.Load()
-	DBconfig.DBInit()
-	app:=app.NewApplication()
-	err:=app.Run()
-	if(err != nil){
+
+	application := app.NewApplication()
+	if err := application.Run(); err != nil {
 		log.Fatal(err)
 	}
-	app.Run()
 }

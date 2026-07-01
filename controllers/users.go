@@ -24,6 +24,11 @@ func (user *UserController) GetAllUsers(w http.ResponseWriter,r *http.Request){
 	w.Write([] byte("all users fetched .."))
 }
 
+func (user *UserController) DeleteUserByID(w http.ResponseWriter,r *http.Request){
+	user.UserService.DeleteUserByID(1)
+	w.Write([] byte("user deleted for the id 1 .."))
+}
+
 func NewUserController(_userService services.UserService) *UserController{
 	return &UserController{
 		UserService: _userService,

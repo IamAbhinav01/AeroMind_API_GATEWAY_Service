@@ -12,6 +12,7 @@ type UserRepository interface {
 	Create()
 	GetUserByID(id int) (models.User, error)
 	GetAllUsers() ([]models.User, error)
+	DeleteUserByID(id int) (sql.Result, error)
 }
 
 // the interface will be implemented by a struct
@@ -84,6 +85,18 @@ func (user *UserRepositoryImpl) GetAllUsers() ([]models.User,error){
 	}
 
 	return users, nil
+}
+
+func (user *UserRepositoryImpl) DeleteUserByID(id int)(sql.Result,error){
+
+	query := "DELETE FROM USERS WHERE id = ?"
+	response,err:=user.db.Exec(query,id)
+	if err != nil{
+		log.Fatal("Error while deleting the user : ",err)
+	}
+	fmt.Println("User deleted successfully ")
+	return response,nil
+
 }
 
 func NewUserRepository(_db *sql.DB) UserRepository{
