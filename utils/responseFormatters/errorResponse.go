@@ -24,14 +24,14 @@ func toJSON(w http.ResponseWriter,status int,data any)error{
 
 
 
-func successResponse(w http.ResponseWriter,status int,message string,data any) error{
+func SuccessResponse(w http.ResponseWriter,status int,message string,data any) error{
 	response := map[string]any{}
 	response["status"] = status
 	response["message"] = message
 	response["data"] = data
 	return toJSON(w,status,response)
 }
-func errorResponse(w http.ResponseWriter,status int,message string,err error) error{
+func ErrorResponse(w http.ResponseWriter,status int,message string,err error) error{
 	response := map[string]any{}
 	response["status"] = status
 	response["message"] = message

@@ -9,7 +9,7 @@ import (
 
 // "Any type that has a Create() method is a UserRepository."
 type UserRepository interface {
-	Create()
+	Create() (int,error)
 	GetUserByID(id int) (models.User, error)
 	GetAllUsers() ([]models.User, error)
 	DeleteUserByID(id int) (sql.Result, error)
@@ -22,7 +22,7 @@ type UserRepositoryImpl struct {
 }
 
 // Since UserRepositoryImpl has a Create() method, it implements the interface.
-func (user *UserRepositoryImpl) Create(){
+func (user *UserRepositoryImpl) Create()(int,error){
 	
 	query := "INSERT INTO users (id,email,password) VALUES(?,?,?)"
 	output,err:=user.db.Exec(query,"2","abhinavSdd@xx.com","thisePasword")
@@ -31,17 +31,16 @@ func (user *UserRepositoryImpl) Create(){
 		log.Fatal("Error inserting the user : ",err)
 	}
 
-	reponse,rowErr:=output.RowsAffected()
+	response,rowErr:=output.RowsAffected()
 
 	if(rowErr != nil){
 		log.Fatal("Error occured while checking rows affected . ",rowErr)
 	}
 
-	if reponse == 0{
+	if response == 0{
 		fmt.Println("No rows were affected , Error while creating the user")
 	}
-
-	fmt.Println("User created Successfully , rows affected : ",reponse)
+	return int(response), nil
 }
 
 

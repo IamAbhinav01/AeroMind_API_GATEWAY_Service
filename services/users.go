@@ -7,7 +7,7 @@ import (
 )
 
 type UserService interface {
-	Create()
+	Create() (int, error)
 	GetUserByID(id int)
 	GetAllUsers() 
 	DeleteUserByID(id int)
@@ -17,9 +17,13 @@ type UserServiceImpl struct {
 	UserRepository DB.UserRepository
 }
 
-func (user *UserServiceImpl) Create() {
+func (user *UserServiceImpl) Create() (int, error) {
 	fmt.Println("Creating user from user service ")
-	user.UserRepository.Create()
+	response , err := user.UserRepository.Create()
+	if err != nil{
+		log.Fatal("Error while creating the user : ",err)
+	}
+	return response,nil;
 }
 
 func (user *UserServiceImpl) GetUserByID(id int) {

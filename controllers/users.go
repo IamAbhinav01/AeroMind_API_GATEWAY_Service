@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"AeromindGO/services"
+	utils "AeromindGO/utils/responseFormatters"
 	"net/http"
 )
 
@@ -10,8 +11,12 @@ type UserController struct {
 }
 
 func (user *UserController) Create(w http.ResponseWriter , r *http.Request){
-	user.UserService.Create()
-	w.Write([] byte("user fetching ongoing ..."))
+	response,err:=user.UserService.Create()
+	if err != nil{
+		utils.ErrorResponse(w,http.StatusAccepted,"Error occured while creating user.",err)
+	} else {
+		utils.SuccessResponse(w,http.StatusCreated,"User created successfully.",response)
+	}
 }
 
 func (user *UserController) GetUserByID(w http.ResponseWriter,r *http.Request){
