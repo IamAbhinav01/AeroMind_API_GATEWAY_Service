@@ -1,20 +1,40 @@
 package utils
 
-import "net/http"
+import (
+	"encoding/json"
+	"net/http"
+)
 
-func successResponse(w http.ResponseWriter,status int,message string,data any){
-	response := map[string]any{
-		response["status"] = status
-		response["message"] = message
-		response["data"] = data
-		
-	}
+
+
+
+
+
+
+func toJSON(w http.ResponseWriter,status int,data any)error{
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+
+	return json.NewEncoder(w).Encode(data)
+
 }
-func errorResponse(w http.ResponseWriter,status int,message string,err error){
-	response := map[string]any{
-		response["status"] = status
-		response["message"] = message
-		response["error"] = err
 
-	}
+
+
+
+
+func successResponse(w http.ResponseWriter,status int,message string,data any) error{
+	response := map[string]any{}
+	response["status"] = status
+	response["message"] = message
+	response["data"] = data
+	return toJSON(w,status,response)
+}
+func errorResponse(w http.ResponseWriter,status int,message string,err error) error{
+	response := map[string]any{}
+	response["status"] = status
+	response["message"] = message
+	response["error"] = err
+	return toJSON(w,status,response)
 }
