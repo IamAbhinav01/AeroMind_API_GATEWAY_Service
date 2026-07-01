@@ -18,6 +18,7 @@ type UserRepositoryImpl struct {
 
 // Since UserRepositoryImpl has a Create() method, it implements the interface.
 func (user *UserRepositoryImpl) Create(){
+	
 	query := "INSERT INTO users (id,email,password) VALUES(?,?,?)"
 	output,err:=user.db.Exec(query,"1","abhinav@xx.com","thisisthePasword")
 
