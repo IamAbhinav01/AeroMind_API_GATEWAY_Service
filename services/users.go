@@ -3,6 +3,7 @@ package services
 import (
 	DB "AeromindGO/DB/repositories"
 	"fmt"
+	"log"
 )
 
 type UserService interface {
@@ -21,7 +22,11 @@ func (user *UserServiceImpl) Create() {
 
 func (user *UserServiceImpl) GetUserByID(id int) {
 	fmt.Println("Fetching user details based on id")
-	user.UserRepository.GetUserByID(id)
+	response,err:=user.UserRepository.GetUserByID(id)
+	if err != nil{
+		log.Fatal("Error while fetching the user by id : ",err)
+	}
+	fmt.Println("User details fetched successfully : ",response)
 }
 
 

@@ -14,7 +14,10 @@ func (user *UserController) Create(w http.ResponseWriter , r *http.Request){
 	w.Write([] byte("user fetching ongoing ..."))
 }
 
-func 
+func (user *UserController) GetUserByID(w http.ResponseWriter,r *http.Request){
+	user.UserService.GetUserByID(1)
+	w.Write([] byte("user fetched for the id 2 .."))
+}
 
 func NewUserController(_userService services.UserService) *UserController{
 	return &UserController{
