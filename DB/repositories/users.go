@@ -11,6 +11,7 @@ import (
 type UserRepository interface {
 	Create()
 	GetUserByID(id int) (models.User, error)
+	GetAllUsers() ([]models.User, error)
 }
 
 // the interface will be implemented by a struct
@@ -23,7 +24,7 @@ type UserRepositoryImpl struct {
 func (user *UserRepositoryImpl) Create(){
 	
 	query := "INSERT INTO users (id,email,password) VALUES(?,?,?)"
-	output,err:=user.db.Exec(query,"1","abhinav@xx.com","thisisthePasword")
+	output,err:=user.db.Exec(query,"2","abhinavSdd@xx.com","thisePasword")
 
 	if err != nil{
 		log.Fatal("Error inserting the user : ",err)
@@ -58,6 +59,32 @@ func (user *UserRepositoryImpl) GetUserByID(id int) (models.User,error){
 	return UsersModel,nil
 }
 
+func (user *UserRepositoryImpl) GetAllUsers() ([]models.User,error){
+
+	query := "SELECT * from users"
+
+	rows,err := user.db.Query(query)
+
+	if err != nil{
+		log.Fatal("Error while fetching all users : ",err)
+	}
+	
+	defer rows.Close()
+
+	var users []models.User
+
+	for rows.Next(){
+		var u models.User
+
+		err := rows.Scan(&u.Id,&u.Email,&u.Password)
+		if err != nil{
+			log.Fatal("Error while scanning the user details : ",err)
+		}
+		users = append(users, u)
+	}
+
+	return users, nil
+}
 
 func NewUserRepository(_db *sql.DB) UserRepository{
 	return &UserRepositoryImpl{

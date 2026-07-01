@@ -19,6 +19,11 @@ func (user *UserController) GetUserByID(w http.ResponseWriter,r *http.Request){
 	w.Write([] byte("user fetched for the id 2 .."))
 }
 
+func (user *UserController) GetAllUsers(w http.ResponseWriter,r *http.Request){
+	user.UserService.GetAllUsers()
+	w.Write([] byte("all users fetched .."))
+}
+
 func NewUserController(_userService services.UserService) *UserController{
 	return &UserController{
 		UserService: _userService,

@@ -9,6 +9,7 @@ import (
 type UserService interface {
 	Create()
 	GetUserByID(id int)
+	GetAllUsers() 
 }
 
 type UserServiceImpl struct {
@@ -29,6 +30,14 @@ func (user *UserServiceImpl) GetUserByID(id int) {
 	fmt.Println("User details fetched successfully : ",response)
 }
 
+func (user *UserServiceImpl) GetAllUsers(){
+	fmt.Println("Fetching all users")
+	response,err:=user.UserRepository.GetAllUsers()
+	if err != nil{
+		log.Fatal("Error while fetching all users : ",err)
+	}
+	fmt.Println("All users fetched successfully : ",response)
+}
 
 func NewUserService(_userRepository DB.UserRepository) UserService{
 	return &UserServiceImpl{
