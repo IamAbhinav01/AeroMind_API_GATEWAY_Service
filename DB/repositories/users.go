@@ -1,13 +1,16 @@
 package DB
 
 import (
+	"AeromindGO/models"
 	"database/sql"
 	"fmt"
 	"log"
 )
+
 // "Any type that has a Create() method is a UserRepository."
 type UserRepository interface {
 	Create()
+	GetUserByID(id int) (models.User, error)
 }
 
 // the interface will be implemented by a struct
@@ -38,6 +41,23 @@ func (user *UserRepositoryImpl) Create(){
 
 	fmt.Println("User created Successfully , rows affected : ",reponse)
 }
+
+
+func (user *UserRepositoryImpl) GetUserByID(id int) (models.User,error){
+	
+	var UsersModel models.User
+	query:="SELECT id,email,password FROM USERS WHERE id = ?"
+	// Query for a single row
+	row:=user.db.QueryRow(query,id)
+
+	err:=row.Scan(&UsersModel.Id,&UsersModel.Email,&UsersModel.Password)
+	if err != nil{
+		log.Fatal("Error while fetching the user by id : ",err)
+	}
+
+	return UsersModel,nil
+}
+
 
 func NewUserRepository(_db *sql.DB) UserRepository{
 	return &UserRepositoryImpl{
