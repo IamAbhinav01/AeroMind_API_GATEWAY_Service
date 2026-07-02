@@ -13,6 +13,7 @@ type UserRepository interface {
 	GetUserByID(id int) (models.User, error)
 	GetAllUsers() ([]models.User, error)
 	DeleteUserByID(id int) (sql.Result, error)
+	GetUserByEmail(email string) (models.User, error)
 }
 
 // the interface will be implemented by a struct
@@ -101,6 +102,21 @@ func (user *UserRepositoryImpl) DeleteUserByID(id int)(sql.Result,error){
 	fmt.Println("User deleted successfully ")
 	return response,nil
 
+}
+
+func (user *UserRepositoryImpl) GetUserByEmail(email string) (models.User, error){
+
+	var userModel models.User
+	query := "SELECT id,email,password FROM USERS WHERE email = ?"
+	row := user.db.QueryRow(query,email)
+
+	err := row.Scan(&userModel.Id,&userModel.Email,&userModel.Password)
+	if err != nil{
+		log.Printf("Error while fetching user by email: %v", err)
+		return models.User{}, fmt.Errorf("get user by email: %w", err)
+	}
+
+	return userModel, nil
 }
 
 func NewUserRepository(_db *sql.DB) UserRepository{

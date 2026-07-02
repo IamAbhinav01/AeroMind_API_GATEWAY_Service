@@ -46,6 +46,15 @@ func (user *UserController) DeleteUserByID(w http.ResponseWriter,r *http.Request
 	}
 }
 
+func (user *UserController) Login(w http.ResponseWriter,r *http.Request){
+	response,err:=user.UserService.Login("mahi@xx.com","thisismeAbhinav")
+	if err != nil{
+		utils.ErrorResponse(w,http.StatusBadRequest,"Error occured while logging in.",err)
+	} else {
+		utils.SuccessResponse(w,http.StatusCreated,"Login successful.",response)
+	}
+}
+
 func NewUserController(_userService services.UserService) *UserController{
 	return &UserController{
 		UserService: _userService,

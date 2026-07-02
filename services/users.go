@@ -14,6 +14,7 @@ type UserService interface {
 	GetUserByID(id int)(models.User, error)
 	GetAllUsers() ([]models.User, error)
 	DeleteUserByID(id int)(sql.Result, error)
+	Login(email string, password string) (string, error)
 }
 
 type UserServiceImpl struct {
@@ -64,6 +65,20 @@ func (user *UserServiceImpl) DeleteUserByID(id int)(sql.Result, error){
 	}
 	fmt.Println("User deleted successfully ")
 	return response,nil
+}
+
+func (user *UserServiceImpl) Login(email string, password string) (string, error) {
+
+	userModel, err := user.UserRepository.GetUserByEmail(email)
+	if err != nil {
+		return "", fmt.Errorf("login: %w", err)
+	}
+
+	if (auth.CheckPasswordHash(password, userModel.Password) == true){
+		return "Login successful", nil
+	}else{
+		return "", fmt.Errorf("login: invalid credentials")
+	}
 }
 
 func NewUserService(_userRepository DB.UserRepository) UserService{
