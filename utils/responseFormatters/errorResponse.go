@@ -35,6 +35,10 @@ func ErrorResponse(w http.ResponseWriter,status int,message string,err error) er
 	response := map[string]any{}
 	response["status"] = status
 	response["message"] = message
-	response["error"] = err
+	if err != nil {
+		response["error"] = err.Error()
+	} else {
+		response["error"] = nil
+	}
 	return toJSON(w,status,response)
 }

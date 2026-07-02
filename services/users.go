@@ -2,6 +2,7 @@ package services
 
 import (
 	DB "AeromindGO/DB/repositories"
+	"AeromindGO/auth"
 	"AeromindGO/models"
 	"database/sql"
 	"fmt"
@@ -9,7 +10,7 @@ import (
 )
 
 type UserService interface {
-	Create() (int, error)
+	Create(email string, password string) (int, error)
 	GetUserByID(id int)(models.User, error)
 	GetAllUsers() ([]models.User, error)
 	DeleteUserByID(id int)(sql.Result, error)
@@ -19,14 +20,20 @@ type UserServiceImpl struct {
 	UserRepository DB.UserRepository
 }
 
-func (user *UserServiceImpl) Create() (int, error) {
+func (user *UserServiceImpl) Create(email string, password string) (int, error) {
 	fmt.Println("Creating user from user service ")
-	response , err := user.UserRepository.Create()
+	HashedPassword,err := auth.HashPassword(password)
 	if err != nil{
-		log.Fatal("Error while creating the user : ",err)
+		log.Fatal("Error while hashing the password : ",err)
 	}
-	return response,nil;
+	response , err := user.UserRepository.Create(email,HashedPassword)
+	if err != nil{
+		log.Printf("Error while creating the user: %v", err)
+		return 0, fmt.Errorf("create user service: %w", err)
+	}
+	return response,nil
 }
+
 
 func (user *UserServiceImpl) GetUserByID(id int) (models.User, error) {
 	fmt.Println("Fetching user details based on id")
