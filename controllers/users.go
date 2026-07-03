@@ -3,7 +3,6 @@ package controllers
 import (
 	"AeromindGO/dto"
 	"AeromindGO/services"
-	JSON "AeromindGO/utils/json"
 	utils "AeromindGO/utils/responseFormatters"
 	validators "AeromindGO/utils/validators"
 	"net/http"
@@ -16,12 +15,8 @@ type UserController struct {
 
 func (user *UserController) Create(w http.ResponseWriter , r *http.Request){
 
-	var payload dto.CreateUserDTO
 
-	if err := JSON.FromJSON(r,&payload); err != nil {
-		utils.ErrorResponse(w,http.StatusBadRequest,"Error occured while reading json.",err)
-		return
-	}
+	payload := r.Context().Value("payload").(dto.CreateUserDTO)
 
 	if validationErr := validators.Validate.Struct(payload); validationErr != nil {
 		utils.ErrorResponse(w,http.StatusBadRequest,"Invalid request payload",validationErr)
@@ -68,13 +63,7 @@ func (user *UserController) DeleteUserByID(w http.ResponseWriter,r *http.Request
 }
 
 func (user *UserController) Login(w http.ResponseWriter,r *http.Request){
-	
-	var payload dto.LoginUserDTO
-
-	if err:= JSON.FromJSON(r,&payload);err!=nil{
-		utils.ErrorResponse(w,http.StatusBadRequest,"Error occured while reading json.",err)
-		return
-	}
+	payload := r.Context().Value("payload").(dto.LoginUserDTO)
 
 	if validationErr := validators.Validate.Struct(payload);validationErr != nil{
 		utils.ErrorResponse(w,http.StatusBadRequest,"Invalid request payload",validationErr)
