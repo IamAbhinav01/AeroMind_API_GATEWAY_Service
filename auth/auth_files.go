@@ -28,6 +28,7 @@ func CheckPasswordHash(password string, hash string) bool {
 }
 
 func Generate_JWT_TOKEN(email string,id int) (string,error){
+
 	jwt_payload := jwt.MapClaims{
 		"email": email,
 		"id":id,
@@ -43,5 +44,26 @@ func Generate_JWT_TOKEN(email string,id int) (string,error){
 	}
 
 	return Token,nil
+
+}
+
+
+func Verify_JWT_TOKEN(token string) (*jwt.Token,error){
+
+	jwt_token,err:= jwt.Parse(token,func(t *jwt.Token) (any, error) {
+		return JWT_SECRET,nil
+	})
+
+	if err != nil{
+		fmt.Println("Invalid token")
+		return nil,err
+	}
+
+	if !jwt_token.Valid {
+		fmt.Println("Invalid token")
+		return nil,err
+	}
+
+	return jwt_token,nil
 
 }
