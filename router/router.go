@@ -1,6 +1,9 @@
 package router
 
-import "github.com/go-chi/chi/v5"
+import (
+
+	"github.com/go-chi/chi/v5"
+)
 
 type Router interface {
 	Register(chi.Router)
@@ -9,6 +12,7 @@ type Router interface {
 func SetupRouter(UserRouter Router) *chi.Mux {
 
 	chiRouter := chi.NewRouter()
+
 	UserRouter.Register(chiRouter)
 	return chiRouter
 
