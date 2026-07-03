@@ -16,7 +16,7 @@ type UserController struct {
 
 func (user *UserController) Create(w http.ResponseWriter , r *http.Request){
 
-	var payload dto.Login_And_SignUp_UserDTO
+	var payload dto.CreateUserDTO
 
 	if err := JSON.FromJSON(r,&payload); err != nil {
 		utils.ErrorResponse(w,http.StatusBadRequest,"Error occured while reading json.",err)
@@ -28,7 +28,7 @@ func (user *UserController) Create(w http.ResponseWriter , r *http.Request){
 		return
 	}
 
-	response,err:=user.UserService.Create(payload.Email,payload.Password)
+	response,err:=user.UserService.Create(payload)
 	if err != nil{
 		status := http.StatusInternalServerError
 		if strings.Contains(strings.ToLower(err.Error()), "duplicate") || strings.Contains(err.Error(), "1062") {
@@ -68,7 +68,20 @@ func (user *UserController) DeleteUserByID(w http.ResponseWriter,r *http.Request
 }
 
 func (user *UserController) Login(w http.ResponseWriter,r *http.Request){
-	response,err:=user.UserService.Login("mahi@xx.com","thisismeAbhinav")
+	
+	var payload dto.LoginUserDTO
+
+	if err:= JSON.FromJSON(r,&payload);err!=nil{
+		utils.ErrorResponse(w,http.StatusBadRequest,"Error occured while reading json.",err)
+		return
+	}
+
+	if validationErr := validators.Validate.Struct(payload);validationErr != nil{
+		utils.ErrorResponse(w,http.StatusBadRequest,"Invalid request payload",validationErr)
+		return
+	}
+
+	response,err:=user.UserService.Login(payload)
 	if err != nil{
 		status := http.StatusInternalServerError
 		if strings.Contains(strings.ToLower(err.Error()), "invalid credentials") {
