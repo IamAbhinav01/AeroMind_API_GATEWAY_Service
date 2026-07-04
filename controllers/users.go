@@ -5,8 +5,12 @@ import (
 	"AeromindGO/services"
 	utils "AeromindGO/utils/responseFormatters"
 	validators "AeromindGO/utils/validators"
+	"log"
 	"net/http"
+	"strconv"
 	"strings"
+
+	"github.com/go-chi/chi/v5"
 )
 
 type UserController struct {
@@ -36,7 +40,14 @@ func (user *UserController) Create(w http.ResponseWriter , r *http.Request){
 }
 
 func (user *UserController) GetUserByID(w http.ResponseWriter,r *http.Request){
-	response,err:=user.UserService.GetUserByID(2)
+
+	idStr:= chi.URLParam(r,"id")
+	id,err:=strconv.Atoi(idStr)
+
+	if err != nil{
+		log.Fatal("Error happenend in controller layer: ",err)
+	}
+	response,err:=user.UserService.GetUserByID(id)
 	if err != nil{
 		utils.ErrorResponse(w,http.StatusInternalServerError,"Error occured while fetching user.",err)
 		return

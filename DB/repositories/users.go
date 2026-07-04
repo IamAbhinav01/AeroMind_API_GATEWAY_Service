@@ -53,11 +53,11 @@ func (user *UserRepositoryImpl) Create(email string, password string)(int,error)
 func (user *UserRepositoryImpl) GetUserByID(id int) (models.User,error){
 	
 	var UsersModel models.User
-	query:="SELECT id,email,password FROM USERS WHERE id = ?"
+	query:="SELECT id,email FROM USERS WHERE id = ?"
 	// Query for a single row
 	row:=user.db.QueryRow(query,id)
 
-	err:=row.Scan(&UsersModel.Id,&UsersModel.Email,&UsersModel.Password)
+	err:=row.Scan(&UsersModel.Id,&UsersModel.Email)
 	if err != nil{
 		log.Fatal("Error while fetching the user by id : ",err)
 	}
