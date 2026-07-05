@@ -12,11 +12,11 @@ type UserRouter struct {
 }
 
 func (user *UserRouter) Register(r chi.Router){
-	r.With(middleware.CreateUserRequestValidation).Post("/create",user.UserController.Create)
-	r.Get("/users/{id}",user.UserController.GetUserByID)
+	r.With(middleware.CreateUserRequestValidation).Post("/user/create",user.UserController.Create)
+	r.With(middleware.JWTMiddleware).Get("/users/{id}",user.UserController.GetUserByID)
 	r.Get("/users",user.UserController.GetAllUsers)
 	r.Delete("/users/{id}",user.UserController.DeleteUserByID)
-	r.With(middleware.LoginUserRequestValidation).Post("/login",user.UserController.Login)
+	r.With(middleware.LoginUserRequestValidation).Post("/user/signin",user.UserController.Login)
 }
 
 func NewRouter(_userController *controllers.UserController) Router{
