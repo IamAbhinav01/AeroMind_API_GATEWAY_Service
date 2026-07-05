@@ -71,15 +71,21 @@ func (user *UserServiceImpl) DeleteUserByID(id int)(sql.Result, error){
 func (user *UserServiceImpl) Login(payload dto.LoginUserDTO) (string, error) {
 
 	userModel, err := user.UserRepository.GetUserByEmail(payload.Email)
+	userId,err:= user.UserRepository.GetIdByEmail(payload.Email)
 	if err != nil {
 		return "", fmt.Errorf("login: %w", err)
 	}
 
-	if (auth.CheckPasswordHash(payload.Password, userModel.Password) == true){
-		return "Login successful", nil
-	}else{
-		return "", fmt.Errorf("login: invalid credentials")
+	if auth.CheckPasswordHash(payload.Password, userModel.Password) {
+	token, err := auth.Generate_JWT_TOKEN(payload.Email, userId)
+		if err != nil {
+			return "", fmt.Errorf("failed to generate token: %w", err)
+		}
+		fmt.Println("token is :",token)
+		return fmt.Sprintf("Login successful\nToken: %s", token), nil
 	}
+
+	return "", fmt.Errorf("login: invalid credentials")
 }
 
 func NewUserService(_userRepository DB.UserRepository) UserService{

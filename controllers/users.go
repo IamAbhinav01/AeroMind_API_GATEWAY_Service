@@ -45,7 +45,8 @@ func (user *UserController) GetUserByID(w http.ResponseWriter,r *http.Request){
 	id,err:=strconv.Atoi(idStr)
 
 	if err != nil{
-		log.Fatal("Error happenend in controller layer: ",err)
+		utils.ErrorResponse(w,http.StatusBadRequest,"Invalid user ID",err)
+		return
 	}
 	response,err:=user.UserService.GetUserByID(id)
 	if err != nil{

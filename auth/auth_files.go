@@ -34,7 +34,7 @@ func Generate_JWT_TOKEN(email string,id int) (string,error){
 		"id":id,
 	}
 
-	jwt_token := jwt.NewWithClaims(jwt.SigningMethodES256,jwt_payload)
+	jwt_token := jwt.NewWithClaims(jwt.SigningMethodHS256,jwt_payload)
 
 	Token, Tokenerr:=jwt_token.SignedString(JWT_SECRET)
 

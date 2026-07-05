@@ -14,6 +14,7 @@ type UserRepository interface {
 	GetAllUsers() ([]models.User, error)
 	DeleteUserByID(id int) (sql.Result, error)
 	GetUserByEmail(email string) (models.User, error)
+	GetIdByEmail(email string) (int, error)  
 }
 
 // the interface will be implemented by a struct
@@ -117,6 +118,20 @@ func (user *UserRepositoryImpl) GetUserByEmail(email string) (models.User, error
 	}
 
 	return userModel, nil
+}
+func (user *UserRepositoryImpl) GetIdByEmail(email string) (int, error){
+
+	var userModel models.User
+	query := "SELECT id FROM USERS WHERE email = ?"
+	row := user.db.QueryRow(query,email)
+
+	err := row.Scan(&userModel.Id)
+	if err != nil{
+		log.Printf("Error while fetching user by email: %v", err)
+		return -1, fmt.Errorf("get user by email: %w", err)
+	}
+
+	return int(userModel.Id), nil
 }
 
 func NewUserRepository(_db *sql.DB) UserRepository{
