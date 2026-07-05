@@ -5,7 +5,6 @@ import (
 	"AeromindGO/services"
 	utils "AeromindGO/utils/responseFormatters"
 	validators "AeromindGO/utils/validators"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
