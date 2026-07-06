@@ -1,6 +1,6 @@
 package limiter
 
-func lua_scripter() string {
+func Lua_Scripter() string {
 
 	var lua_script = `
 	local key = KEYS[1]
