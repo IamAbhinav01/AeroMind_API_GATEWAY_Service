@@ -16,7 +16,7 @@ type UserRouter struct {
 func (user *UserRouter) Register(r chi.Router){
 	r.With(user.RateLimiter,middleware.CreateUserRequestValidation).Post("/user/create",user.UserController.Create)
 	r.With(middleware.JWTMiddleware).Get("/users/{id}",user.UserController.GetUserByID)
-	r.Get("/users",user.UserController.GetAllUsers)
+	r.With(user.RateLimiter).Get("/users",user.UserController.GetAllUsers)
 	r.Delete("/users/{id}",user.UserController.DeleteUserByID)
 	r.With(middleware.LoginUserRequestValidation).Post("/user/signin",user.UserController.Login)
 }

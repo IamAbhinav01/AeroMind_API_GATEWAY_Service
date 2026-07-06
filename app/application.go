@@ -55,7 +55,7 @@ func (app *Application) Run() error{
     rateService,
     middleware.RateLimiterOptions{
         Label:    "standard",
-        Capacity: 20,
+        Capacity: 5,
         Refill:   5,
         Timeout:  10000,
         Cost:     1,

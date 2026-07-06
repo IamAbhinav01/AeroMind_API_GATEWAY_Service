@@ -54,6 +54,60 @@ type BucketResponse struct {
     Identifier   string
 }
 
+func parseNumericInt(value any) (int, error) {
+	switch v := value.(type) {
+	case int:
+		return v, nil
+	case int64:
+		return int(v), nil
+	case int32:
+		return int(v), nil
+	case float64:
+		return int(math.Round(v)), nil
+	case float32:
+		return int(math.Round(float64(v))), nil
+	case string:
+		parsed, err := strconv.ParseFloat(v, 64)
+		if err != nil {
+			return 0, err
+		}
+		return int(math.Round(parsed)), nil
+	default:
+		parsed, err := strconv.ParseFloat(fmt.Sprint(value), 64)
+		if err != nil {
+			return 0, err
+		}
+		return int(math.Round(parsed)), nil
+	}
+}
+
+func parseNumericInt64(value any) (int64, error) {
+	switch v := value.(type) {
+	case int:
+		return int64(v), nil
+	case int64:
+		return v, nil
+	case int32:
+		return int64(v), nil
+	case float64:
+		return int64(math.Round(v)), nil
+	case float32:
+		return int64(math.Round(float64(v))), nil
+	case string:
+		parsed, err := strconv.ParseFloat(v, 64)
+		if err != nil {
+			return 0, err
+		}
+		return int64(math.Round(parsed)), nil
+	default:
+		parsed, err := strconv.ParseFloat(fmt.Sprint(value), 64)
+		if err != nil {
+			return 0, err
+		}
+		return int64(math.Round(parsed)), nil
+	}
+}
+
 func (bucket *RedisBucketServiceImpl) GetClientKey(identifier string) string{
 
 	key := fmt.Sprintf("r1:tb:%s",identifier)
@@ -119,17 +173,17 @@ func (bucket *RedisBucketServiceImpl) IsRequestAllowed(
 		return nil, fmt.Errorf("unexpected rate limiter response: %v", rawResult)
 	}
 
-	allowed, err := strconv.Atoi(fmt.Sprint(result[0]))
+	allowed, err := parseNumericInt(result[0])
 	if err != nil {
 		return nil, err
 	}
 
-	remaining, err := strconv.Atoi(fmt.Sprint(result[1]))
+	remaining, err := parseNumericInt(result[1])
 	if err != nil {
 		return nil, err
 	}
 
-	retryAfterMs, err := strconv.ParseInt(fmt.Sprint(result[2]), 10, 64)
+	retryAfterMs, err := parseNumericInt64(result[2])
 	if err != nil {
 		return nil, err
 	}
