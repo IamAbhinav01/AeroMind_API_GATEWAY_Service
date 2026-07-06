@@ -5,11 +5,15 @@ import (
 	DBconfig "AeromindGO/config/db"
 	config "AeromindGO/config/env"
 	"AeromindGO/controllers"
+	"AeromindGO/middleware"
 	"AeromindGO/router"
 	"AeromindGO/services"
+	"AeromindGO/utils/limiter"
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/redis/go-redis/v9"
 )
 
 type Config struct{
@@ -34,10 +38,34 @@ func (app *Application) Run() error{
 		fmt.Println("Error while setting up database",err)
 		return err
 	}
+
+	redisClient:=redis.NewClient(&redis.Options{
+		Addr: config.GetString("REDIS_ADDR","localhost:6379"),
+	})
+
+
 	ur:=DB.NewUserRepository(db)
 	us:=services.NewUserService(ur)
 	uc:=controllers.NewUserController(us)
-	uRouter:=router.NewRouter(uc)
+	
+
+	rateService:=limiter.NewRedisBucketService(redisClient)
+
+	rateLimiter := middleware.CreateRateLimiter(
+    rateService,
+    middleware.RateLimiterOptions{
+        Label:    "standard",
+        Capacity: 20,
+        Refill:   5,
+        Timeout:  10000,
+        Cost:     1,
+        Whitelist: []string{"127.0.0.1"},
+    },
+	
+	)
+	
+	uRouter:=router.NewRouter(uc,rateLimiter)
+
 	server:=&http.Server{
 		Addr: app.Config.Addr,
 		Handler: router.SetupRouter(uRouter),
