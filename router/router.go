@@ -13,7 +13,12 @@ func SetupRouter(UserRouter Router) *chi.Mux {
 
 	chiRouter := chi.NewRouter()
 
-	UserRouter.Register(chiRouter)
+	// Mount application routes under /api/v1 so external clients
+	// can call paths like /api/v1/booking/... and match proxy prefixes.
+	apiRouter := chi.NewRouter()
+	UserRouter.Register(apiRouter)
+
+	chiRouter.Mount("/api/v1", apiRouter)
 	return chiRouter
 
 }

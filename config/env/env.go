@@ -17,6 +17,11 @@ func Load() {
 	}
 
 }
+
+func init() {
+    // Try to load .env early so package-level initializers can read env vars.
+    _ = godotenv.Load()
+}
 func GetInt(key string , fallback int) int{
 
 	value,ok := os.LookupEnv(key)

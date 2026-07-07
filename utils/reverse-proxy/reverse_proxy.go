@@ -24,8 +24,6 @@ func CreateProxyMiddleware(targetURL string, pathPrefix string) http.Handler{
 
 			req.Out.Host = target.Host
 
-			req.Out.URL.Path = pathPrefix + req.In.URL.Path
-
 			log.Printf("%s -> %s%s",req.In.RemoteAddr,target.Host,req.Out.URL.Path)
             
         },
