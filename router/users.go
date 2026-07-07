@@ -21,7 +21,7 @@ func (user *UserRouter) Register(r chi.Router){
 	r.With(middleware.LoginUserRequestValidation).Post("/user/signin",user.UserController.Login)
 
 	r.Mount("/flights",middleware.FlightsProxy)
-	r.Mount("/bookings",middleware.BookingsProxy)
+	r.Mount("/booking",middleware.BookingsProxy)
 	r.Mount("/ai",middleware.AIProxy)
 }
 
