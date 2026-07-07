@@ -9,7 +9,7 @@ import (
 	"net/url"
 )
 
-func createProxyMiddleware(targetURL string, pathPrefix string) http.Handler{
+func CreateProxyMiddleware(targetURL string, pathPrefix string) http.Handler{
 	target,err:=url.Parse(targetURL)
 
 	if err != nil{
