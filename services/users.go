@@ -82,7 +82,7 @@ func (user *UserServiceImpl) Login(payload dto.LoginUserDTO) (string, error) {
 			return "", fmt.Errorf("failed to generate token: %w", err)
 		}
 		fmt.Println("token is :",token)
-		return fmt.Sprintf("Login successful\nToken: %s", token), nil
+		return token, nil
 	}
 
 	return "", fmt.Errorf("login: invalid credentials")
