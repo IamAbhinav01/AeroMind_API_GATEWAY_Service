@@ -24,10 +24,15 @@ type Application struct{
 	Config Config
 }
 
-func NewApplication() *Application{
-	return  &Application{
+func NewApplication() *Application {
+	port := config.GetString("PORT", "3000")
+	if len(port) > 0 && port[0] != ':' {
+		port = ":" + port
+	}
+
+	return &Application{
 		Config: Config{
-			Addr: config.GetString("PORT",":3000"),
+			Addr: port,
 		},
 	}
 }
