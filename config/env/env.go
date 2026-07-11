@@ -10,12 +10,10 @@ import (
 )
 
 func Load() { 
-	err :=godotenv.Load()
-	if err != nil{
-		log.Fatal("Error loading .env file")
-		fmt.Println("Unable to load .env")
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("No .env file found. Falling back to system environment variables.")
 	}
-
 }
 
 func init() {
