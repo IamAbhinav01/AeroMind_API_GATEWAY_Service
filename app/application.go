@@ -39,9 +39,20 @@ func (app *Application) Run() error{
 		return err
 	}
 
-	redisClient:=redis.NewClient(&redis.Options{
-		Addr: config.GetString("REDIS_ADDR","localhost:6379"),
-	})
+	var redisClient *redis.Client
+	redisURL := config.GetString("REDIS_URL", "")
+	if redisURL != "" {
+		opt, err := redis.ParseURL(redisURL)
+		if err != nil {
+			fmt.Println("Error parsing REDIS_URL:", err)
+			return err
+		}
+		redisClient = redis.NewClient(opt)
+	} else {
+		redisClient = redis.NewClient(&redis.Options{
+			Addr: config.GetString("REDIS_ADDR", "localhost:6379"),
+		})
+	}
 
 
 	ur:=DB.NewUserRepository(db)

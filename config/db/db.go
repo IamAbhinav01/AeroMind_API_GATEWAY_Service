@@ -13,11 +13,17 @@ func DBInit() (*sql.DB, error) {
 
 	cfg := mysql.NewConfig()
 
-	cfg.User = config.GetString("DBUSER","DBUSER")
-	cfg.Passwd = config.GetString("DBPASS","DBPASS")
-	cfg.Net = config.GetString("DB_Net","DB_Net")
-	cfg.Addr = config.GetString("DB_Addr","DB_Addr")
-	cfg.DBName = config.GetString("DBName","DBName")
+	cfg.User = config.GetString("DBUSER", "DBUSER")
+	cfg.Passwd = config.GetString("DBPASS", "DBPASS")
+	cfg.Net = config.GetString("DB_Net", "tcp")
+	cfg.Addr = config.GetString("DB_Addr", "DB_Addr")
+	cfg.DBName = config.GetString("DBName", "DBName")
+
+	// Support TLS for TiDB and other cloud providers
+	tlsConfig := config.GetString("DB_TLS", "")
+	if tlsConfig != "" {
+		cfg.TLSConfig = tlsConfig
+	}
 
 	fmt.Println("Connecting to database : ",cfg.DBName,cfg.FormatDSN())
 
